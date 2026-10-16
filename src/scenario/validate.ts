@@ -60,5 +60,56 @@ export function validateScenario(scenario: Scenario): string[] {
       checkIntent(intent, `Nodo "${id}"`);
     }
   }
+  for (const [id, node] of Object.entries(nodes)) {
+    if (!node.options) continue;
+    errors.push(...validateOptions(scenario, id));
+  }
+  return errors;
+}
+
+export const OPTIONS_PER_NODE = 4;
+export const MAX_OPTION_WORDS = 15;
+
+/** Checks the options of one node (used by validateScenario). */
+export function validateOptions(scenario: Scenario, nodeId: string): string[] {
+  const errors: string[] = [];
+  const node = scenario.nodes[nodeId];
+  if (!node?.options) return errors;
+  const where = `Nodo "${nodeId}"`;
+  if (node.outcome) {
+    errors.push(`${where}: es final y no debe tener opciones.`);
+    return errors;
+  }
+  if (node.options.length !== OPTIONS_PER_NODE) {
+    errors.push(`${where}: tiene ${node.options.length} opciones y deben ser ${OPTIONS_PER_NODE}.`);
+  }
+  const nodeIntents = new Set((node.intents ?? []).map((i) => i.id));
+  const globalIntents = new Set((scenario.globalIntents ?? []).map((i) => i.id));
+  const seen = new Set<string>();
+  for (const option of node.options) {
+    const label = `${where}, opción "${option.id}"`;
+    if (!option.id) errors.push(`${where}: una opción no tiene "id".`);
+    if (seen.has(option.id)) errors.push(`${label}: el id está repetido.`);
+    seen.add(option.id);
+    const words = option.text?.trim().split(/\s+/).filter(Boolean).length ?? 0;
+    if (words === 0) errors.push(`${label}: no tiene texto.`);
+    if (words > MAX_OPTION_WORDS) {
+      errors.push(`${label}: tiene ${words} palabras (máximo ${MAX_OPTION_WORDS}).`);
+    }
+    if (!option.intents || option.intents.length === 0) {
+      errors.push(`${label}: no apunta a ninguna intención.`);
+      continue;
+    }
+    let ofNode = 0;
+    for (const intentId of option.intents) {
+      if (nodeIntents.has(intentId)) ofNode++;
+      else if (!globalIntents.has(intentId)) {
+        errors.push(
+          `${label}: la intención "${intentId}" no existe en el nodo ni en las globales.`,
+        );
+      }
+    }
+    if (ofNode > 1) errors.push(`${label}: apunta a más de una intención del nodo.`);
+  }
   return errors;
 }

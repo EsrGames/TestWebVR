@@ -1,6 +1,6 @@
 import type { AvatarTurn, Emotion, Responder } from '../app/conversation';
 import { matchKeywords } from './matcher';
-import type { Scenario, ScenarioIntent, ScenarioState, TurnHistory } from './types';
+import type { Scenario, ScenarioIntent, ScenarioOption, ScenarioState, TurnHistory } from './types';
 import { validateScenario } from './validate';
 
 export const MAX_ANGER = 10;
@@ -54,6 +54,9 @@ export class ScenarioEngine implements Responder {
   private readonly turns: TurnHistory[] = [];
   private readonly uses = new Map<string, number>();
   private readonly variants: VariantPicker;
+  private readonly random: () => number;
+  /** Shuffled options of the current turn, so their order is stable until the next turn. */
+  private shuffled: { key: string; options: readonly ScenarioOption[] } | null = null;
 
   constructor(
     readonly scenario: Scenario,
@@ -65,7 +68,8 @@ export class ScenarioEngine implements Responder {
     }
     this.nodeId = scenario.start;
     this.anger = scenario.initialAnger;
-    this.variants = new VariantPicker(options.random ?? Math.random);
+    this.random = options.random ?? Math.random;
+    this.variants = new VariantPicker(this.random);
   }
 
   get state(): ScenarioState {
@@ -83,16 +87,59 @@ export class ScenarioEngine implements Responder {
     return this.turn(this.variants.pick(`node:${this.nodeId}`, node.say), node.gesture, null);
   }
 
+  /** Voice/text mode: intents are detected from what the user said. */
   respond(userText: string): AvatarTurn {
     if (this.ended) {
       return { text: '', emotion: emotionForAnger(this.anger), final: true };
     }
-    const fromId = this.nodeId;
-    const node = this.node(fromId);
+    const node = this.node(this.nodeId);
     const nodeMatch = this.bestIntent(userText, node.intents ?? []);
     const globals = (this.scenario.globalIntents ?? []).filter(
       (intent) => matchKeywords(userText, intent.keywords).score > 0,
     );
+    return this.resolve(userText, nodeMatch, globals);
+  }
+
+  /** The 4 replies of the current moment, shuffled once per turn ([] if there are none). */
+  options(): readonly ScenarioOption[] {
+    if (this.ended) return [];
+    const node = this.node(this.nodeId);
+    if (!node.options) return [];
+    const key = `${this.turns.length}:${this.nodeId}`;
+    if (this.shuffled?.key !== key) {
+      const options = [...node.options];
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(this.random() * (i + 1));
+        [options[i], options[j]] = [options[j] as ScenarioOption, options[i] as ScenarioOption];
+      }
+      this.shuffled = { key, options };
+    }
+    return this.shuffled.options;
+  }
+
+  /** Options mode: applies the intents the chosen reply points to. */
+  choose(optionId: string): AvatarTurn {
+    if (this.ended) {
+      return { text: '', emotion: emotionForAnger(this.anger), final: true };
+    }
+    const node = this.node(this.nodeId);
+    const option = node.options?.find((o) => o.id === optionId);
+    if (!option) throw new Error(`La opción "${optionId}" no existe en el nodo "${this.nodeId}"`);
+    const nodeIntent = (node.intents ?? []).find((i) => option.intents.includes(i.id)) ?? null;
+    const globals = (this.scenario.globalIntents ?? []).filter((g) =>
+      option.intents.includes(g.id),
+    );
+    return this.resolve(option.text, nodeIntent, globals);
+  }
+
+  /** Shared by both modes: applies the detected intents and decides the reply. */
+  private resolve(
+    userText: string,
+    nodeMatch: ScenarioIntent | null,
+    globals: readonly ScenarioIntent[],
+  ): AvatarTurn {
+    const fromId = this.nodeId;
+    const node = this.node(fromId);
 
     for (const intent of globals) this.applyIntent(intent);
     let text: string;

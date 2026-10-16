@@ -372,3 +372,16 @@ definido en `.claude/loop-prompt.md` (paso 5).
 - Queda el **check D3** (sesión de validación con usuarios) y, antes, D0–D2.
 - **Todas las tareas de código del backlog están hechas.** T11 (Vosk) solo se hará si los
   resultados de D1 lo piden. El loop se detiene: no quedan tareas elegibles sin el equipo.
+
+## 2026-10-16 · T21 · Opciones en el guion y en el motor
+- Resultado: hecha
+- Cambios: `ScenarioOption` y `ScenarioNode.options` (types.ts); `validateOptions` (exactamente 4
+  por nodo no final, ids únicos, intenciones existentes, como mucho una del nodo, 15 palabras como
+  mucho, prohibidas en nodos finales); en el motor, `respond()` y el nuevo `choose()` comparten
+  `resolve()` (mismo enfado, rendimientos decrecientes, finales e historial), `options()` baraja
+  una vez por turno con el RNG inyectado; `Responder.options/choose`,
+  `ConversationController.submitOption()` y `currentOptions()`; .claude/sync-publish.sh para
+  copiar al repo de publicación; tests/options.test.ts (11)
+- Verificación: `npm run check` pasa (los tests anteriores del guion siguen en verde tras el
+  refactor); los 11 tests nuevos pasan
+- Notas: el guion real todavía no tiene opciones (T23); la UI llega en T22.

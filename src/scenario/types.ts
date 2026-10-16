@@ -18,10 +18,24 @@ export interface ScenarioIntent {
   readonly kind?: 'positive' | 'negative' | 'neutral';
 }
 
+/**
+ * A ready-made reply the user can pick with the controller laser. It points to existing
+ * intents (at most one of the node, any number of global ones), so choosing it has exactly the
+ * same effect as saying something that matches them.
+ */
+export interface ScenarioOption {
+  readonly id: string;
+  /** What the clerk says (shown on the button and as "Tú: …"). */
+  readonly text: string;
+  readonly intents: readonly string[];
+}
+
 export interface ScenarioNode {
   readonly say: readonly string[];
   readonly gesture?: Gesture;
   readonly intents?: readonly ScenarioIntent[];
+  /** The 4 replies offered in options mode (required there for non-final nodes). */
+  readonly options?: readonly ScenarioOption[];
   /** When nothing matches. */
   readonly fallback?: { readonly say: readonly string[]; readonly anger?: number };
   /** Said instead of the fallback after `hintAfter` misses in a row. */

@@ -73,7 +73,9 @@ comprobar en el visor, márcala `[x]` cuando pase en el emulador y añade el pun
 3. DECISIONS.md: añade las decisiones técnicas tomadas (librería, versión, motivo).
 4. `git add -A && git commit -m "Txx: <título>"` con las líneas de atribución que
    correspondan.
-5. **Push:** solo si en `DECISIONS.md` → "Respuestas del equipo" pone `push autorizado: sí`
+5. **Publicación:** copia los ficheros versionados al repo de publicación (ver CLAUDE.md →
+   "Repo de publicación") y haz commit allí con `npm run check &&`.
+6. **Push:** solo si en `DECISIONS.md` → "Respuestas del equipo" pone `push autorizado: sí`
    y hay un remoto configurado. Entonces `git push` a `main` (eso publica en GitHub Pages).
    Antes, comprueba que `npm run check` acaba de pasar. Nunca hagas `--force`.
    Si el workflow de Actions falla, la siguiente iteración lo arregla antes de coger otra tarea.

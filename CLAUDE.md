@@ -16,8 +16,11 @@ siguiendo `docs/DEVICE_CHECKS.md`.
    API de reconocimiento (envía audio fuera), ni descargar modelos de Hugging Face en
    runtime. Los modelos se sirven desde la propia app (`public/models/`).
    Descargar paquetes npm y modelos **durante el desarrollo** sí está permitido.
-3. **Push-to-talk:** solo se escucha mientras se mantiene pulsado el gatillo del mando.
-4. **Sin lip-sync y sin LLM.** La conversación es un guion con detección por palabras clave.
+3. **Respuestas por opciones:** el usuario elige una de 4 frases con el láser del mando y el
+   gatillo (cambio de enfoque del 2026-10-16: la transcripción fallaba en el visor). La voz con
+   push-to-talk queda como modo opcional (`?voice=1`).
+4. **Sin lip-sync y sin LLM.** La conversación es un guion: opciones fijas por momento (y, en
+   modo voz, detección por palabras clave).
 5. **Idioma:** español de España (STT, TTS y textos de la UI).
 6. **Se publica en GitHub Pages** como web estática, en una subruta (`https://<usuario>.github.io/<repo>/`).
    Por eso:
@@ -120,6 +123,13 @@ docs/                     # plan, backlog, progreso, decisiones, checks en dispo
 | `?emulate=1` | Fuerza el emulador IWER aunque haya WebXR nativo |
 | `?stt=tiny\|base` | Modelo Whisper a usar (por defecto: `base`) |
 | `?scenario=<id>` | Guion a cargar (por defecto: `devolucion-sin-ticket`) |
+
+## Repo de publicación
+
+Se desarrolla en esta carpeta. El repo conectado a GitHub (EsrGames/TestWebVR, publicado en
+https://esrgames.github.io/TestWebVR/) es `D:\Users\Usuario\Documents\Unity_new\TestWebVR`.
+Al cerrar una tarea se copian allí los ficheros versionados (`git ls-files`) y se hace commit con
+el gate en verde. **Push solo si el equipo lo autoriza** en DECISIONS.md.
 
 ## Trabajo en loop
 

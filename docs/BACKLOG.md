@@ -341,6 +341,78 @@ errores en la consola.
 
 ---
 
+## M5 · Respuestas por opciones (cambio de enfoque, 2026-10-16)
+
+El equipo ha visto que la transcripción falla en el visor. A partir de ahora el usuario **elige
+una de 4 respuestas** con el láser del mando y el gatillo. La voz (STT) queda como modo opcional
+(`?voice=1`). Javier sigue hablando con Piper.
+
+### T21 · Opciones en el guion y en el motor
+- Estado: [x]
+- Depende de: —
+- Qué:
+  - Tipos: `ScenarioNode.options?: ScenarioOption[]` con `{ id, text, intents: string[] }`. Cada
+    opción apunta a una o varias intenciones existentes del nodo o globales (p. ej. "Vaya, lo
+    siento. Cuénteme qué le ha pasado" = `disculpa` + `pregunta_que_paso`). Como mucho una
+    intención de nodo por opción (la que decide a dónde se va).
+  - Validador: cada nodo no final con opciones tiene exactamente 4; ids únicos; cada intención
+    referenciada existe; texto de 15 palabras como mucho; errores legibles en español.
+  - Motor: `options()` devuelve las 4 del nodo actual **en orden aleatorio** (RNG inyectable,
+    estable mientras no se cambie de turno) y `choose(optionId)` aplica las intenciones con la
+    misma lógica que `respond()` (enfado, rendimientos decrecientes, finales, historial, resumen).
+    Refactorizar para que `respond(texto)` y `choose(id)` compartan el mismo camino.
+  - `Responder` y `ConversationController`: `options()` opcional y `submitOption(id)` (la frase
+    elegida se muestra como "Tú: …"; no hay STT ni grabación).
+- Aceptación: tests del validador, de `choose` (enfado, siguiente nodo, intenciones combinadas,
+  finales), del barajado determinista y de `submitOption` en el controlador; `npm run check` pasa.
+
+### T22 · Panel 3D de 4 opciones
+- Estado: [ ]
+- Depende de: T21
+- Qué:
+  - `src/ui/optionsPanel.ts`: 4 botones en cuadrícula 2×2 bajo los subtítulos, texto con ajuste
+    de línea (troika, saneado), resaltado al apuntar, número 1–4 visible.
+  - Generalizar el puntero del panel final para servir a cualquier conjunto de botones y a **los
+    dos mandos** (zurdos); se elige al **pulsar** el gatillo sobre una opción, nunca solo por
+    apuntar. Ratón en escritorio y teclas 1–4.
+  - Las opciones aparecen cuando Javier termina de hablar y se ocultan mientras piensa o habla y
+    al terminar la conversación. En modo opciones el gatillo no es push-to-talk.
+  - Subtítulo de estado: "Apunta y pulsa el gatillo para responder" (en PC: "Haz clic o pulsa 1–4").
+- Aceptación: en el emulador, apuntar y pulsar el gatillo (rayo dirigido a un botón) elige la
+  opción, Javier responde y aparecen las 4 siguientes; clic y teclas funcionan en 2D; una partida
+  completa por opciones llega a los dos finales; FPS y draw calls por ojo siguen por debajo del
+  presupuesto.
+
+### T23 · Las 36 opciones del guion
+- Estado: [ ]
+- Depende de: T21
+- Qué:
+  - 4 opciones para cada uno de los 9 momentos no finales de `devolucion-sin-ticket.json`: mezcla
+    de buena práctica, opción mediocre y errores (rigidez, "cálmese", culpar), con matices para
+    que no sea obvio; frases naturales de dependiente, en español de España, de 15 palabras como
+    mucho.
+  - Tests: un recorrido bueno y uno malo jugados con `choose`, todas las opciones alcanzan un nodo
+    válido, ningún momento se queda sin opción buena ni sin opción mala.
+  - Actualizar la página de revisión del guion (artefacto) con las opciones de cada momento.
+  - Anotar en DECISIONS.md la lógica de las opciones para que el equipo la revise.
+- Aceptación: el validador acepta el guion; los recorridos simulados llegan al final esperado.
+
+### T24 · Voz opcional, carga ligera y publicación
+- Estado: [ ]
+- Depende de: T22, T23
+- Qué:
+  - Modo por defecto: opciones. Whisper **solo se descarga y el micrófono solo se pide** con
+    `?voice=1` (el flujo actual de voz sigue disponible así). `?text=1` sigue funcionando.
+  - Pantalla de inicio y textos acordes ("Apunta con el mando y pulsa el gatillo para responder").
+  - Actualizar CLAUDE.md (parámetros), PLAN, README y DEVICE_CHECKS (D0–D2 con opciones).
+  - Sincronizar los ficheros con el repo de publicación `D:\Users\Usuario\Documents\Unity_new\TestWebVR`
+    y hacer commit allí (sin push: lo autoriza el equipo).
+- Aceptación: en el build de Pages, sin `?voice=1` no se pide Whisper ni el micrófono (comprobado en
+  las peticiones de red); con `?voice=1` el flujo de voz carga como antes; `npm run check` pasa en
+  los dos repos.
+
+---
+
 ## Ideas aparcadas (no hacer sin que el equipo lo pida)
 
 - Avatar humano (Character Creator, Mixamo, Quaternius CC0…) en lugar del robot.

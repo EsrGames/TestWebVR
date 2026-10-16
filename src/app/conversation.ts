@@ -23,6 +23,15 @@ export interface AvatarTurn {
 export interface Responder {
   start(): AvatarTurn;
   respond(userText: string): AvatarTurn;
+  /** Options mode: the replies the user can pick right now. */
+  options?(): readonly ReplyOption[];
+  /** Options mode: the user picked one of `options()`. */
+  choose?(optionId: string): AvatarTurn;
+}
+
+export interface ReplyOption {
+  readonly id: string;
+  readonly text: string;
 }
 
 /** The parts of the UI the controller drives (subtitles, debug HUD, avatar...). */
@@ -159,6 +168,27 @@ export class ConversationController {
     await this.reply(clean, generation, this.now(), null, null);
   }
 
+  /** Options mode: the user picked a reply with the laser (or click / keys on a PC). */
+  async submitOption(optionId: string): Promise<void> {
+    const { responder } = this.deps;
+    const option = responder.options?.().find((o) => o.id === optionId);
+    if (!option || !responder.choose) return;
+    if (this.state === 'speaking') this.interrupt();
+    else if (this.state !== 'idle') {
+      this.deps.onBusy?.();
+      return;
+    }
+    const generation = ++this.generation;
+    const choose = responder.choose.bind(responder);
+    await this.reply(option.text, generation, this.now(), null, null, () => choose(optionId));
+  }
+
+  /** Current reply options (empty outside options mode or when the avatar cannot listen). */
+  currentOptions(): readonly ReplyOption[] {
+    if (this.state !== 'idle') return [];
+    return this.deps.responder.options?.() ?? [];
+  }
+
   private async handleRecording(
     recording: Recording | null,
     generation: number,
@@ -204,10 +234,11 @@ export class ConversationController {
     startedAt: number,
     sttMs: number | null,
     audioSeconds: number | null,
+    produce: () => AvatarTurn = () => this.deps.responder.respond(userText),
   ): Promise<void> {
     this.deps.view.setUser(userText);
     this.setStatus('thinking');
-    const turn = this.deps.responder.respond(userText);
+    const turn = produce();
     const speech = await this.speak(turn, generation, startedAt);
     this.deps.log.add({
       userText,
