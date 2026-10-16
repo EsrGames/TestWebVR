@@ -367,7 +367,7 @@ una de 4 respuestas** con el láser del mando y el gatillo. La voz (STT) queda c
   finales), del barajado determinista y de `submitOption` en el controlador; `npm run check` pasa.
 
 ### T22 · Panel 3D de 4 opciones
-- Estado: [ ]
+- Estado: [x]
 - Depende de: T21
 - Qué:
   - `src/ui/optionsPanel.ts`: 4 botones en cuadrícula 2×2 bajo los subtítulos, texto con ajuste

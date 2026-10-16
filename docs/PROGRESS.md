@@ -395,3 +395,19 @@ definido en `.claude/loop-prompt.md` (paso 5).
 - Verificación: `npm run check` pasa; recorridos con `choose`: bueno en 3 turnos, con tropiezo
   en 4 (pasa por el cierre) y malo en 2; cada momento tiene una opción que calma y otra que
   empeora; todas las opciones se pueden elegir y llevan a un nodo válido
+
+## 2026-10-16 · T22 · Panel 3D de 4 opciones
+- Resultado: hecha
+- Cambios: src/ui/optionsPanel.ts (cuadrícula 2×2 numerada, texto con ajuste, resaltado, se oculta
+  al elegir para no elegir dos veces, `chooseNumber` para las teclas), src/ui/panelPointer.ts
+  generalizado (`attachPointer` para varios paneles y **los dos mandos**, se elige al pulsar el
+  gatillo, clic de ratón en escritorio), main.ts: modo opciones por defecto (`?voice=1` para el
+  modo voz), el gatillo no es push-to-talk en modo opciones, las opciones aparecen cuando Javier
+  espera respuesta y se ocultan mientras piensa, habla o al terminar, teclas 1–4, avisos de estado
+  según el modo; el panel va delante del mostrador (y 0,97, z −0,7) inclinado hacia los ojos
+- Verificación: `npm run check` pasa (181 tests). En el emulador: tras el saludo aparecen 4
+  opciones barajadas; con el láser + gatillo se juega el recorrido bueno (3 turnos, una elección
+  con el mando izquierdo) y el malo (2 turnos), con el panel final en ambos; tecla 1 real y clic real
+  de ratón eligen la opción correcta; 72 FPS y 40 draw calls por ojo (< 50); sin errores en consola
+- Notas: en el emulador el panel queda en el borde inferior por su campo de visión apaisado; en
+  las gafas basta con bajar la mirada (a comprobar en D0/D2).

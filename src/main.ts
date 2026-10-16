@@ -21,7 +21,8 @@ import { ProviderSpeaker, WebSpeechSpeaker } from './tts/speakers';
 import type { Speaker } from './tts/types';
 import { DebugHud } from './ui/debugHud';
 import { FinalPanel } from './ui/finalPanel';
-import { attachPanelPointer } from './ui/panelPointer';
+import { OptionsPanel } from './ui/optionsPanel';
+import { attachPointer } from './ui/panelPointer';
 import { createStartScreen } from './ui/startScreen';
 import { SubtitlePanel } from './ui/subtitles';
 import { createTextInput } from './ui/textInput';
@@ -67,12 +68,21 @@ async function main(): Promise<void> {
   placeAvatar(avatar);
   ctx.onFrame((dt, timeMs) => avatar.update(dt, timeMs));
 
-  // Without a headset (PC) the trigger is the Space key, or typing in text mode.
+  // Default: the user picks one of 4 replies with the laser. `?voice=1` keeps the old
+  // push-to-talk + speech recognition flow. Without a headset (PC): click, keys 1-4 or Space.
   const desktop = !capabilities.immersiveVR;
   const textMode = hasFlag('text');
-  const subtitles = new SubtitlePanel(
-    desktop ? { idle: textMode ? 'Escribe abajo tu respuesta' : 'Mantén Espacio para hablar' } : {},
-  );
+  const voiceMode = hasFlag('voice');
+  const idleHint = voiceMode
+    ? desktop
+      ? 'Mantén Espacio para hablar'
+      : 'Mantén el gatillo para hablar'
+    : desktop
+      ? 'Haz clic en una respuesta o pulsa 1-4'
+      : 'Apunta a una respuesta y pulsa el gatillo';
+  const subtitles = new SubtitlePanel({
+    idle: textMode && desktop ? 'Escribe abajo tu respuesta' : idleHint,
+  });
   subtitles.group.position.set(0, SHOP_LAYOUT.subtitles.y, SHOP_LAYOUT.subtitles.z);
   subtitles.group.rotation.x = -0.12;
   ctx.scene.add(subtitles.group);
@@ -180,7 +190,15 @@ async function main(): Promise<void> {
   });
   panel.group.position.set(0, 1.42, SHOP_LAYOUT.subtitles.z - 0.15);
   ctx.scene.add(panel.group);
-  attachPanelPointer(ctx, controllers, panel);
+
+  // The 4 replies: in front of the counter, below the subtitles, tilted towards the eyes.
+  const optionsPanel = new OptionsPanel();
+  optionsPanel.group.position.set(0, 0.97, -0.7);
+  optionsPanel.group.rotation.x = -0.45;
+  ctx.scene.add(optionsPanel.group);
+  attachPointer(ctx, controllers, [panel, optionsPanel]);
+  // In options mode the trigger chooses replies; it only talks in voice mode.
+  ptt.enabled = voiceMode;
 
   /** One play-through: a fresh script state, log and conversation controller. */
   const createRun = () => {
@@ -200,6 +218,14 @@ async function main(): Promise<void> {
           subtitles.setStatus(status);
           avatar.setStatus(status);
           if (status === 'ended') showSummary(engine);
+          // Replies only while Javier waits for an answer; hidden while he thinks or talks.
+          if (!voiceMode && status === 'idle') {
+            optionsPanel.show(run.conversation.currentOptions(), (id) => {
+              void run.conversation.submitOption(id);
+            });
+          } else {
+            optionsPanel.hide();
+          }
         },
         setUser: (text) => subtitles.setUser(text),
         setAvatar: (text) => subtitles.setAvatar(scenario.persona.name, text),
@@ -232,11 +258,12 @@ async function main(): Promise<void> {
     speaker?.stop();
     capture?.discard();
     panel.hide();
+    optionsPanel.hide();
     subtitles.clear();
     subtitles.group.visible = true;
     avatar.setEmotion('neutral');
     run = createRun();
-    ptt.enabled = true;
+    ptt.enabled = voiceMode;
     void run.conversation.start();
   };
 
@@ -273,6 +300,9 @@ async function main(): Promise<void> {
     if (event.target instanceof HTMLInputElement) return;
     // R repeats the conversation from the final panel (desktop shortcut for the button).
     if (event.code === 'KeyR' && panel.visible) restart();
+    // 1-4 choose a reply (desktop shortcut for the laser).
+    const digit = /^Digit([1-4])$/.exec(event.code)?.[1];
+    if (digit && optionsPanel.chooseNumber(Number(digit))) return;
     if (!hud) return;
     // Debug: P replays the last recording exactly as the STT received it (16 kHz).
     if (event.code === 'KeyP' && lastRecording) playRecording(getAudioContext(), lastRecording);
@@ -307,6 +337,7 @@ async function main(): Promise<void> {
       stt,
       scenario,
       panel,
+      optionsPanel,
       restart,
       startScreen: start,
       get log() {
