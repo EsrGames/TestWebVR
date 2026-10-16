@@ -384,7 +384,7 @@ una de 4 respuestas** con el láser del mando y el gatillo. La voz (STT) queda c
   presupuesto.
 
 ### T23 · Las 36 opciones del guion
-- Estado: [ ]
+- Estado: [x]
 - Depende de: T21
 - Qué:
   - 4 opciones para cada uno de los 9 momentos no finales de `devolucion-sin-ticket.json`: mezcla

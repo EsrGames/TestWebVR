@@ -385,3 +385,13 @@ definido en `.claude/loop-prompt.md` (paso 5).
 - Verificación: `npm run check` pasa (los tests anteriores del guion siguen en verde tras el
   refactor); los 11 tests nuevos pasan
 - Notas: el guion real todavía no tiene opciones (T23); la UI llega en T22.
+
+## 2026-10-16 · T23 · Las 36 opciones del guion
+- Resultado: hecha (adelantada a T22: la aceptación de T22 necesita un guion con opciones)
+- Cambios: 4 opciones en cada uno de los 9 momentos no finales de devolucion-sin-ticket.json, 3
+  intenciones nuevas (ofrece_reparacion en revisión, reproche y cierre_seco en el cierre),
+  tests/scenarioOptions.test.ts (8), página de revisión del guion actualizada con las opciones
+  (artefacto, misma URL), lógica de las opciones en DECISIONS.md
+- Verificación: `npm run check` pasa; recorridos con `choose`: bueno en 3 turnos, con tropiezo
+  en 4 (pasa por el cierre) y malo en 2; cada momento tiene una opción que calma y otra que
+  empeora; todas las opciones se pueden elegir y llevan a un nodo válido

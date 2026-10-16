@@ -79,6 +79,20 @@ Javier llega con enfado **7/10**. Se calma del todo (0) y se va contento, o lleg
 
 Recorrido bueno típico: 4–5 turnos. Recorrido malo: 2–3 turnos.
 
+## Lógica de las 4 opciones (para revisar)
+
+En cada momento hay al menos una opción que calma y otra que empeora; en la mayoría, además, una
+intermedia. En las gafas aparecen en orden aleatorio. Recorridos típicos:
+
+- Bueno (3 turnos): escuchar y disculparse → buscar la compra por la tarjeta → cambiarla.
+- Con un tropiezo (4 turnos): pedir el ticket lo primero → tranquilizar y buscar por tarjeta →
+  cambiarla → despedirse amablemente.
+- Malo (2 turnos): "cálmese" dos veces, o culpar al cliente y escudarse en la norma.
+
+Se añadieron tres intenciones para que las opciones malas o intermedias tengan sentido:
+ofrecer la reparación al revisar la tostadora (±0), reprochar al cliente al cerrar (+2) y
+despedirse con sequedad (+1). Las 36 frases están en la página de revisión del guion.
+
 ## Preguntas abiertas para el equipo
 
 <!-- El loop añade aquí las dudas de producto, cada una con el valor por defecto que ha
@@ -96,6 +110,8 @@ Recorrido bueno típico: 4–5 turnos. Recorrido malo: 2–3 turnos.
   en el prototipo.
 - [Plan] ¿El avatar debe ser humano ya en esta fase, o vale el robot para validar la mecánica?
   — Por defecto: robot hasta después de D2.
+- [T23] ¿Las 36 respuestas suenan naturales y con matices suficientes? — Por defecto: tal
+  cual; se ajustan tras probarlas en las gafas.
 - [T15] ¿Os parece bien la tabla de efectos de arriba (qué suma y qué resta enfado, y cuánto)?
   — Por defecto: tal cual; se ajusta tras D2.
 - [Plan] ¿Nombre y personalidad del cliente? — Por defecto: "Javier", unos 45 años, impaciente

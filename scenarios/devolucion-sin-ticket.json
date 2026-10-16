@@ -214,7 +214,29 @@
         ],
         "anger": 1
       },
-      "hint": ["¿Me va a preguntar qué le pasa o me quedo aquí esperando?"]
+      "hint": ["¿Me va a preguntar qué le pasa o me quedo aquí esperando?"],
+      "options": [
+        {
+          "id": "a",
+          "text": "Vaya, lo siento mucho. Cuénteme qué le ha pasado.",
+          "intents": ["disculpa", "pregunta_que_paso"]
+        },
+        {
+          "id": "b",
+          "text": "Buenos días. ¿Tiene el ticket de compra?",
+          "intents": ["saludo", "pide_ticket"]
+        },
+        {
+          "id": "c",
+          "text": "Cálmese, por favor, que así no podemos hablar.",
+          "intents": ["calmese"]
+        },
+        {
+          "id": "d",
+          "text": "Eso es que la habrá usado mal.",
+          "intents": ["culpar"]
+        }
+      ]
     },
     "explica": {
       "say": [
@@ -303,7 +325,29 @@
         "say": ["¿Y entonces? ¿Qué hacemos?", "¿Me va a ayudar o no?"],
         "anger": 1
       },
-      "hint": ["Pagué con la tarjeta, por si eso sirve de algo..."]
+      "hint": ["Pagué con la tarjeta, por si eso sirve de algo..."],
+      "options": [
+        {
+          "id": "a",
+          "text": "¿Pagó con tarjeta? Podemos buscar la compra en el sistema.",
+          "intents": ["solucion_alternativa"]
+        },
+        {
+          "id": "b",
+          "text": "Déjeme revisarla un momento, a ver qué le pasa.",
+          "intents": ["ofrece_revisar"]
+        },
+        {
+          "id": "c",
+          "text": "Lo siento, pero sin ticket no puedo hacer nada.",
+          "intents": ["disculpa", "norma_rigida"]
+        },
+        {
+          "id": "d",
+          "text": "Qué faena, entiendo que le dé rabia.",
+          "intents": ["empatia"]
+        }
+      ]
     },
     "sin_ticket": {
       "say": [
@@ -357,7 +401,29 @@
         "say": ["¿Entonces qué? ¿Me voy por donde he venido?"],
         "anger": 1
       },
-      "hint": ["Pagué con tarjeta, eso tiene que quedar registrado en algún sitio, ¿no?"]
+      "hint": ["Pagué con tarjeta, eso tiene que quedar registrado en algún sitio, ¿no?"],
+      "options": [
+        {
+          "id": "a",
+          "text": "No se preocupe, lo buscamos de otra forma. ¿Pagó con tarjeta?",
+          "intents": ["tranquilizar_bien", "solucion_alternativa"]
+        },
+        {
+          "id": "b",
+          "text": "Tranquilo, le entiendo. Cuénteme qué le pasa a la tostadora.",
+          "intents": ["empatia"]
+        },
+        {
+          "id": "c",
+          "text": "Sin ticket no se puede, son las normas.",
+          "intents": ["norma_rigida"]
+        },
+        {
+          "id": "d",
+          "text": "Pues no es mi problema que lo haya perdido.",
+          "intents": ["no_es_mi_problema"]
+        }
+      ]
     },
     "norma": {
       "say": [
@@ -399,7 +465,29 @@
         "say": ["¡Esto es increíble!", "¿Y ya está? ¿Esa es su respuesta?"],
         "anger": 2
       },
-      "hint": ["Si al menos pudiera demostrar que la compré aquí... Pagué con tarjeta."]
+      "hint": ["Si al menos pudiera demostrar que la compré aquí... Pagué con tarjeta."],
+      "options": [
+        {
+          "id": "a",
+          "text": "Perdone, tiene razón. Busquemos su compra con la tarjeta.",
+          "intents": ["disculpa", "solucion_alternativa"]
+        },
+        {
+          "id": "b",
+          "text": "Lo entiendo, de verdad. Déjeme consultarlo con mi encargado.",
+          "intents": ["empatia", "consultar_encargado"]
+        },
+        {
+          "id": "c",
+          "text": "Si no le gusta, puede poner una reclamación.",
+          "intents": ["no_es_mi_problema"]
+        },
+        {
+          "id": "d",
+          "text": "Cálmese, que gritando no va a conseguir nada.",
+          "intents": ["calmese"]
+        }
+      ]
     },
     "revision": {
       "say": [
@@ -424,13 +512,43 @@
           "next": "prueba",
           "kind": "positive",
           "label": "Reconocer el fallo"
+        },
+        {
+          "id": "ofrece_reparacion",
+          "label": "Ofrecer reparación",
+          "keywords": ["servicio tecnico", "reparar", "repararla", "arreglarla"],
+          "anger": 0,
+          "next": "reparacion",
+          "kind": "neutral"
         }
       ],
       "fallback": {
         "say": ["¿Qué? ¿Funciona o no funciona?"],
         "anger": 1
       },
-      "hint": ["¿Ve como no calienta? Dígamelo usted."]
+      "hint": ["¿Ve como no calienta? Dígamelo usted."],
+      "options": [
+        {
+          "id": "a",
+          "text": "Efectivamente, no calienta. Está defectuosa, tiene usted razón.",
+          "intents": ["confirma_fallo"]
+        },
+        {
+          "id": "b",
+          "text": "Perdone la espera. Sí, está estropeada.",
+          "intents": ["disculpa", "confirma_fallo"]
+        },
+        {
+          "id": "c",
+          "text": "Habrá que mandarla al servicio técnico y esperar.",
+          "intents": ["ofrece_reparacion"]
+        },
+        {
+          "id": "d",
+          "text": "A mí me parece que funciona... ¿Seguro que la enchufó bien?",
+          "intents": ["culpar"]
+        }
+      ]
     },
     "prueba": {
       "say": ["¿Lo ve? Está rota. ¿Y ahora qué hacemos, si no tengo el ticket?"],
@@ -465,7 +583,29 @@
         "say": ["¿Entonces? ¿Qué se puede hacer?"],
         "anger": 1
       },
-      "hint": ["Pagué con tarjeta, eso tiene que quedar registrado en algún sitio."]
+      "hint": ["Pagué con tarjeta, eso tiene que quedar registrado en algún sitio."],
+      "options": [
+        {
+          "id": "a",
+          "text": "Tranquilo, lo solucionamos. ¿Pagó con tarjeta? Lo buscamos en el sistema.",
+          "intents": ["tranquilizar_bien", "solucion_alternativa"]
+        },
+        {
+          "id": "b",
+          "text": "Déjeme preguntar a mi encargado qué podemos hacer.",
+          "intents": ["consultar_encargado"]
+        },
+        {
+          "id": "c",
+          "text": "Sin el ticket, me temo que no puedo cambiársela.",
+          "intents": ["norma_rigida"]
+        },
+        {
+          "id": "d",
+          "text": "Eso pasa por usarla mal, no es culpa de la tienda.",
+          "intents": ["culpar"]
+        }
+      ]
     },
     "busca_compra": {
       "say": [
@@ -529,7 +669,29 @@
         "say": ["¿Entonces? ¿Me la cambia o no?"],
         "anger": 1
       },
-      "hint": ["Yo solo quiero una que funcione, o que me devuelvan el dinero."]
+      "hint": ["Yo solo quiero una que funcione, o que me devuelvan el dinero."],
+      "options": [
+        {
+          "id": "a",
+          "text": "Perfecto, aquí está. Se la cambio ahora mismo por una nueva.",
+          "intents": ["ofrece_cambio"]
+        },
+        {
+          "id": "b",
+          "text": "Si lo prefiere, le devuelvo el dinero.",
+          "intents": ["ofrece_devolucion"]
+        },
+        {
+          "id": "c",
+          "text": "La enviamos al servicio técnico y en unas semanas la tiene.",
+          "intents": ["ofrece_reparacion"]
+        },
+        {
+          "id": "d",
+          "text": "Esto no me sirve, necesito el ticket en papel.",
+          "intents": ["norma_rigida"]
+        }
+      ]
     },
     "reparacion": {
       "say": ["¿Al servicio técnico? Eso son semanas, y era un regalo. ¿No me la pueden cambiar?"],
@@ -577,7 +739,29 @@
         "say": ["¿Me la cambia o no?"],
         "anger": 1
       },
-      "hint": ["De verdad, prefiero una nueva o mi dinero."]
+      "hint": ["De verdad, prefiero una nueva o mi dinero."],
+      "options": [
+        {
+          "id": "a",
+          "text": "Tiene razón, mejor se la cambio ahora por una nueva.",
+          "intents": ["ofrece_cambio"]
+        },
+        {
+          "id": "b",
+          "text": "Entonces, si quiere, le devuelvo el dinero.",
+          "intents": ["ofrece_devolucion"]
+        },
+        {
+          "id": "c",
+          "text": "Lo siento, solo puedo ofrecerle la reparación.",
+          "intents": ["disculpa", "insiste_reparacion"]
+        },
+        {
+          "id": "d",
+          "text": "Cálmese, que dos semanas no es tanto.",
+          "intents": ["calmese"]
+        }
+      ]
     },
     "cierre": {
       "say": [
@@ -605,13 +789,51 @@
           "next": "fin_bien",
           "kind": "positive",
           "label": "Cerrar con amabilidad"
+        },
+        {
+          "id": "reproche",
+          "label": "Reprochar al cliente",
+          "keywords": ["la proxima vez", "guarde el ticket", "tenga mas cuidado"],
+          "anger": 2,
+          "say": ["Vaya, gracias por el consejo... ¿Algo más o ya me puedo ir?"],
+          "kind": "negative"
+        },
+        {
+          "id": "cierre_seco",
+          "label": "Despedirse con sequedad",
+          "keywords": ["el siguiente", "siguiente por favor"],
+          "anger": 1,
+          "say": ["¿Así, sin más? Pues vaya trato..."],
+          "kind": "negative"
         }
       ],
       "fallback": {
         "say": ["¿Ya está, entonces?"],
         "anger": 0
       },
-      "hint": ["Bueno, pues si no hace falta nada más, me voy."]
+      "hint": ["Bueno, pues si no hace falta nada más, me voy."],
+      "options": [
+        {
+          "id": "a",
+          "text": "No hace falta nada más. Que tenga un buen día.",
+          "intents": ["cierre_amable"]
+        },
+        {
+          "id": "b",
+          "text": "Firme aquí, por favor. Gracias por su paciencia.",
+          "intents": ["cierre_amable"]
+        },
+        {
+          "id": "c",
+          "text": "Y la próxima vez, guarde el ticket.",
+          "intents": ["reproche"]
+        },
+        {
+          "id": "d",
+          "text": "Bueno, ya está. ¡El siguiente!",
+          "intents": ["cierre_seco"]
+        }
+      ]
     },
     "fin_bien": {
       "say": [
