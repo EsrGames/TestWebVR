@@ -1,5 +1,9 @@
 # Plan técnico del prototipo
 
+> **Cambio de enfoque (2026-10-16, hito M5):** la transcripción fallaba en el visor, así que por
+> defecto el usuario **elige una de 4 respuestas** con el láser del mando y el gatillo. Lo que este
+> plan describe sobre voz (captura, Whisper, push-to-talk) sigue disponible con `?voice=1`.
+
 ## 1. Objetivo y alcance
 
 Validar si una conversación por voz con un avatar en VR, ejecutada **íntegramente en unas

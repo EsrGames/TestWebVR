@@ -20,18 +20,20 @@ Añadid `?debug=1` a la URL para ver el HUD con las métricas.
 
 ## D0 · Entrar en VR
 Tras T03–T05.
-- [ ] La pantalla de inicio carga y "Empezar" pide permiso de micrófono.
-- [ ] Al aceptar, la barra de carga llega al 100 % y aparece "Entrar en VR". Al denegarlo,
-  sale el mensaje con "Reintentar" y "Continuar en modo texto".
+- [ ] La pantalla de inicio carga y "Empezar" **no** pide micrófono (solo lo pide con `?voice=1`).
+- [ ] La barra de carga llega al 100 % y aparece "Entrar en VR".
 - [ ] "Entrar en VR" abre la sesión inmersiva; se ven el suelo y los mandos.
-- [ ] Mantener el gatillo derecho vibra al empezar y al soltar, y el subtítulo cambia a
-  "Escuchando…" mientras se mantiene. Un toque muy corto no debe contar. El gatillo izquierdo
-  no hace nada.
+- [ ] Cuando Javier termina de hablar aparecen 4 respuestas delante del mostrador. ¿Se leen bien
+  bajando un poco la mirada? Al apuntar con el láser, la respuesta se ilumina; al pulsar el
+  gatillo se elige. Probad con los dos mandos.
 - [ ] El HUD (`?debug=1`) se muestra y se oculta con B/Y; los acentos se ven bien.
 - [ ] Apuntad lo que dice el HUD sobre las capacidades: WebGPU sí/no, crossOriginIsolated sí/no, núcleos.
 - [ ] FPS aproximados: ____ (Q2) / ____ (Q3)
 
-## D1 · Rendimiento de voz — PUNTO DE DECISIÓN
+## D1 · Rendimiento de voz (opcional desde el cambio a opciones)
+
+Solo si queréis volver a evaluar la voz: abrid la URL con `?voice=1&debug=1`.
+
 Tras T10. Hacedlo en **Quest 2 y Quest 3** con `?debug=1` (whisper-base). Si en Quest 2 tarda
 más de 3 s, repetid con `?debug=1&stt=tiny` y, si el HUD dice WebGPU: sí, con `&sttdevice=webgpu`.
 En esta fase el avatar es una cápsula que repite lo que entiende ("Has dicho: …").
@@ -58,7 +60,8 @@ Tras T17.
 - [ ] Jugadlo siendo borde. ¿Llega al final malo?
 - [ ] ¿El avatar se siente presente (mirada, gestos, reacción al enfado)? (1–5): ____
 - [ ] ¿Cuántas veces no entendió algo que sí era razonable? Anotad la frase.
-- [ ] ¿Se puede interrumpir al avatar pulsando el gatillo mientras habla?
+- [ ] ¿Elegir entre 4 respuestas resulta natural? ¿Alguna es demasiado obvia o no se entiende?
+- [ ] Si se elige una respuesta mientras Javier aún habla, ¿se corta y responde a la nueva?
 - [ ] Al terminar sale el panel de resumen. ¿Se lee bien? ¿Os parece justo lo que dice que ha
   funcionado y lo que hay que mejorar? Apuntad con el mando derecho a "Repetir" y pulsad el gatillo.
 - [ ] Impresión general y qué cambiaríais.

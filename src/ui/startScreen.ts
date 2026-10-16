@@ -11,6 +11,10 @@ export interface StartScreenOptions {
   readonly capabilities: Capabilities;
   /** `?text=1`: typing replaces the microphone, so no permission is requested. */
   readonly textMode: boolean;
+  /** Voice mode only: ask for the microphone on "Empezar". */
+  readonly microphone: boolean;
+  /** How to answer, shown under the description. */
+  readonly hint: string;
   readonly title: string;
   readonly description: string;
 }
@@ -42,7 +46,7 @@ export function createStartScreen(container: HTMLElement, options: StartScreenOp
   const card = el('div', 'start-card');
   const title = el('h1', 'start-title', options.title);
   const description = el('p', 'start-description', options.description);
-  const hint = el('p', 'start-hint', 'Mantén pulsado el gatillo derecho para hablar.');
+  const hint = el('p', 'start-hint', options.hint);
   const message = el('p', 'start-message');
   const warning = el('p', 'start-message');
   const retryButton = el('button', 'start-secondary', 'Reintentar (recargar)');
@@ -112,8 +116,8 @@ export function createStartScreen(container: HTMLElement, options: StartScreenOp
     message.textContent = '';
     // AudioContext must be created/resumed inside the gesture (autoplay policy).
     await resumeAudio().catch((err: unknown) => console.warn('[TestWebVR] Audio resume', err));
-    if (options.textMode) {
-      await load(null, true);
+    if (options.textMode || !options.microphone) {
+      await load(null, options.textMode);
       return;
     }
     try {

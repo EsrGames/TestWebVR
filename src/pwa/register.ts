@@ -25,6 +25,16 @@ export async function registerServiceWorker(): Promise<boolean> {
     }
     await navigator.serviceWorker.ready;
     if (!registration.active) return false;
+    // `ready` resolves while the worker may still be activating; reloading then lets the
+    // navigation bypass it (no COOP/COEP). Wait until it actually controls this page.
+    if (!navigator.serviceWorker.controller) {
+      await new Promise<void>((resolve) => {
+        navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), {
+          once: true,
+        });
+        setTimeout(resolve, 3000);
+      });
+    }
     sessionStorage.setItem(RELOAD_FLAG, '1');
     location.reload();
     return true;

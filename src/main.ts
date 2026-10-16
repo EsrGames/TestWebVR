@@ -88,13 +88,15 @@ async function main(): Promise<void> {
   ctx.scene.add(subtitles.group);
 
   const piper = new PiperTTSProvider();
-  const stt = textMode
-    ? null
-    : new WhisperSTTProvider(
-        chooseSttModel(getParam('stt')),
-        chooseSttDevice(getParam('sttdevice'), capabilities.webgpu),
-      );
-  hud?.set('Modelo', stt?.model ?? 'texto');
+  // Whisper (77 MB) is only downloaded in voice mode.
+  const stt =
+    !voiceMode || textMode
+      ? null
+      : new WhisperSTTProvider(
+          chooseSttModel(getParam('stt')),
+          chooseSttDevice(getParam('sttdevice'), capabilities.webgpu),
+        );
+  hud?.set('Modelo', stt?.model ?? (voiceMode ? 'texto' : 'opciones'));
   hud?.set('Backend', stt?.device ?? '-');
 
   let sttError = null as Error | null;
@@ -155,6 +157,12 @@ async function main(): Promise<void> {
     preloader,
     capabilities,
     textMode,
+    microphone: voiceMode && !textMode,
+    hint: voiceMode
+      ? 'Mantén pulsado el gatillo derecho para hablar.'
+      : desktop
+        ? 'Haz clic en una de las 4 respuestas (o pulsa 1-4) para contestar a Javier.'
+        : 'Apunta con el mando a una de las 4 respuestas y pulsa el gatillo para elegirla.',
     title: scenario.title,
     description: scenario.description,
   });

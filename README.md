@@ -4,6 +4,15 @@ Prototipo WebXR para entrenar soft skills: hablas con un avatar (un cliente enfa
 de unas Meta Quest, y todo se ejecuta en el propio visor. El contexto completo está en
 [CLAUDE.md](CLAUDE.md) y el plan en [docs/PLAN.md](docs/PLAN.md).
 
+## Cómo se juega
+
+Javier llega enfadado al mostrador. Cuando termina de hablar aparecen **4 respuestas**: en las
+gafas, apunta con el láser de cualquiera de los dos mandos y pulsa el gatillo; en un PC, haz clic o
+pulsa 1–4. Javier reacciona con su voz, su cara y sus gestos según lo que elijas, y al final verás
+un resumen de lo que ha funcionado y lo que no.
+
+El modo voz (hablar con el gatillo pulsado) sigue disponible añadiendo `?voice=1` a la URL.
+
 ## Arrancar
 
 Requisitos: Node 22 o superior.

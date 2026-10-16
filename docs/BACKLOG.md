@@ -398,7 +398,7 @@ una de 4 respuestas** con el láser del mando y el gatillo. La voz (STT) queda c
 - Aceptación: el validador acepta el guion; los recorridos simulados llegan al final esperado.
 
 ### T24 · Voz opcional, carga ligera y publicación
-- Estado: [ ]
+- Estado: [x]
 - Depende de: T22, T23
 - Qué:
   - Modo por defecto: opciones. Whisper **solo se descarga y el micrófono solo se pide** con

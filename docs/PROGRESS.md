@@ -411,3 +411,23 @@ definido en `.claude/loop-prompt.md` (paso 5).
   de ratón eligen la opción correcta; 72 FPS y 40 draw calls por ojo (< 50); sin errores en consola
 - Notas: en el emulador el panel queda en el borde inferior por su campo de visión apaisado; en
   las gafas basta con bajar la mirada (a comprobar en D0/D2).
+
+## 2026-10-16 · T24 · Voz opcional, carga ligera y publicación
+- Resultado: hecha
+- Cambios: Whisper y el micrófono solo con `?voice=1` (main.ts, `microphone` y `hint` en la
+  pantalla de inicio), textos de inicio según el modo, CLAUDE.md (parámetro `?voice=1`), README
+  ("Cómo se juega"), PLAN (nota del cambio de enfoque), DEVICE_CHECKS (D0 y D2 con opciones, D1
+  opcional); **arreglo** en src/pwa/register.ts: en una visita nueva la recarga se lanzaba antes de
+  que el service worker controlara la página y la app quedaba sin aislar
+- Verificación: `npm run check` pasa. Build de Pages con service worker y cachés borrados: una
+  sola recarga y `crossOriginIsolated === true`; sin `?voice=1` no se pide micrófono, no se crea
+  el Worker de Whisper y solo se cachean la voz y el runtime (sin ficheros de Whisper); en PC la
+  tarjeta se oculta y Javier saluda; con `?voice=1` se pide micrófono, carga Whisper (7 ficheros en
+  caché) sin avisos
+- Notas: el fallo de la primera visita no salió en T20 porque aquella pestaña ya tenía un service
+  worker anterior.
+
+### Resumen del hito M5 (Respuestas por opciones)
+- Hecho: opciones en el guion y motor (T21), 36 respuestas (T23), panel 3D con láser (T22) y voz
+  opcional con carga ligera (T24). Todo sincronizado en el repo de publicación, **sin push**.
+- Toca volver a probar en las gafas: D0 y D2 (ya adaptados a las opciones).

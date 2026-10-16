@@ -119,9 +119,10 @@ docs/                     # plan, backlog, progreso, decisiones, checks en dispo
 | Parámetro | Efecto |
 |---|---|
 | `?debug=1` | HUD con estado, latencias STT/TTS, FPS; log de sesión descargable |
+| `?voice=1` | Modo voz: push-to-talk + Whisper (descarga 77 MB y pide micrófono). Sin él, el usuario elige entre 4 respuestas |
 | `?text=1` | Entrada por teclado en lugar de micrófono (para pruebas en escritorio) |
 | `?emulate=1` | Fuerza el emulador IWER aunque haya WebXR nativo |
-| `?stt=tiny\|base` | Modelo Whisper a usar (por defecto: `base`) |
+| `?stt=tiny\|base` | Modelo Whisper en modo voz (por defecto: `base`) |
 | `?scenario=<id>` | Guion a cargar (por defecto: `devolucion-sin-ticket`) |
 
 ## Repo de publicación
