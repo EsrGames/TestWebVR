@@ -67,12 +67,16 @@ async function main(): Promise<void> {
   placeAvatar(avatar);
   ctx.onFrame((dt, timeMs) => avatar.update(dt, timeMs));
 
-  const subtitles = new SubtitlePanel();
+  // Without a headset (PC) the trigger is the Space key, or typing in text mode.
+  const desktop = !capabilities.immersiveVR;
+  const textMode = hasFlag('text');
+  const subtitles = new SubtitlePanel(
+    desktop ? { idle: textMode ? 'Escribe abajo tu respuesta' : 'Mantén Espacio para hablar' } : {},
+  );
   subtitles.group.position.set(0, SHOP_LAYOUT.subtitles.y, SHOP_LAYOUT.subtitles.z);
   subtitles.group.rotation.x = -0.12;
   ctx.scene.add(subtitles.group);
 
-  const textMode = hasFlag('text');
   const piper = new PiperTTSProvider();
   const stt = textMode
     ? null
@@ -258,7 +262,12 @@ async function main(): Promise<void> {
     speaker?.stop();
     run.conversation.pttCancel();
   });
-  if (session.textMode && !capabilities.immersiveVR) startConversation();
+  if (desktop) {
+    // No VR session will hide the start card or greet the user: do it now so the scene and
+    // the conversation are usable on a PC (Space to talk, or typing with ?text=1).
+    start.root.hidden = true;
+    startConversation();
+  }
 
   window.addEventListener('keydown', (event) => {
     if (event.target instanceof HTMLInputElement) return;

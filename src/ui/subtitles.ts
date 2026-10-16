@@ -25,7 +25,8 @@ export class SubtitlePanel {
   private readonly userText;
   private readonly avatarText;
 
-  constructor() {
+  /** `labels` overrides status texts, e.g. "Mantén Espacio para hablar" on a PC without VR. */
+  constructor(private readonly labels: Partial<Record<ConversationStatus, string>> = {}) {
     this.group.name = 'subtitles';
     const background = new Mesh(
       new PlaneGeometry(WIDTH, HEIGHT),
@@ -64,7 +65,7 @@ export class SubtitlePanel {
 
   setStatus(status: ConversationStatus): void {
     this.statusDot.material.color.setHex(STATUS_COLORS[status]);
-    setText(this.statusText, STATUS_LABELS[status]);
+    setText(this.statusText, this.labels[status] ?? STATUS_LABELS[status]);
   }
 
   setUser(text: string): void {
